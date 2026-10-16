@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ricettario</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ricettario">
+<meta name="theme-color" content="#f5f4ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icona-180.png">
+<style>
+:root{
+  --bg:#f5f4ef; --surface:#ffffff; --sunk:#ecebe4;
+  --ink:#2a2017; --muted:#6c6358; --line:#dedbd1;
+  --olive:#5d7731; --olive-soft:#e6ecd9; --on-olive:#ffffff;
+  --crust:#9c5a1c; --danger:#a3362b;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --serif:"New York",ui-serif,"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#16140f; --surface:#211e18; --sunk:#1b1914;
+    --ink:#efe8dc; --muted:#a69c8e; --line:#36312a;
+    --olive:#a7c06b; --olive-soft:#2c3420; --on-olive:#18200c;
+    --crust:#e0a462; --danger:#e5806f;
+    color-scheme:dark;
+  }
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--sans);-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--olive);outline-offset:2px}
+
+.barra{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;align-items:center;gap:8px;padding:10px 16px;min-height:52px;border-bottom:1px solid transparent}
+.barra.ombra{border-bottom-color:var(--line)}
+.barra .indietro{background:none;border:0;color:var(--olive);font-size:17px;padding:6px 0;cursor:pointer}
+.barra .spazio{flex:1}
+.barra .titolino{font-weight:600;font-size:15px;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+main{max-width:640px;margin:0 auto;padding:4px 16px 48px}
+h1{font:600 34px/1.1 var(--serif);margin:8px 0 6px;letter-spacing:-.01em}
+h2{font:600 22px/1.2 var(--serif);margin:36px 0 12px}
+.autore{color:var(--muted);margin:0 0 4px}
+.desc{margin:0 0 8px}
+.aiuto{color:var(--muted);font-size:14px;margin:6px 0 0}
+
+/* elenco */
+.elenco{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.elenco a{display:block;padding:14px 2px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.elenco .t{font:600 19px/1.25 var(--serif)}
+.elenco .s{color:var(--muted);font-size:14px;margin-top:2px}
+.vuoto{color:var(--muted);padding:14px 2px;border-bottom:1px solid var(--line);margin:0}
+.azioni{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:500}
+.btn.prim{background:var(--olive);border-color:var(--olive);color:var(--on-olive)}
+.btn.peric{color:var(--danger)}
+.btn.piccolo{padding:6px 10px;font-size:14px;border-radius:8px}
+
+/* resa */
+.resa{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;margin:20px 0 4px}
+.campo label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.passo{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.passo button{border:0;background:none;width:42px;font-size:20px;cursor:pointer;color:var(--olive)}
+.passo input{width:64px;border:0;background:none;text-align:center;font:600 20px/1 var(--serif);padding:8px 0;font-variant-numeric:tabular-nums}
+.inp{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:9px 10px;width:100%}
+.inp.num{width:96px;text-align:right;font-variant-numeric:tabular-nums}
+.pillole{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pillola{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.pillola[aria-pressed="true"]{background:var(--olive-soft);border-color:var(--olive);color:var(--ink)}
+
+/* ingredienti */
+.ingr{width:100%;border-collapse:collapse;margin-top:18px}
+.ingr td{padding:6px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+.ingr td.n{padding-right:10px}
+.ingr td.q{width:1%;white-space:nowrap;text-align:right}
+.ingr .qta{width:92px;border:1px solid transparent;border-radius:8px;background:var(--sunk);text-align:right;padding:7px 8px;font:600 18px/1 var(--serif);font-variant-numeric:tabular-nums}
+.ingr .qta:focus{border-color:var(--olive);background:var(--surface)}
+.ingr .u{display:inline-block;width:34px;color:var(--muted);font-size:14px;padding-left:6px;text-align:left}
+.ingr tr.tot td{border-bottom:0;font-weight:600;padding-top:10px}
+.ingr tr.tot .val{font:600 18px/1 var(--serif);font-variant-numeric:tabular-nums;padding-right:8px}
+.variata{color:var(--crust);font-size:12px;margin-left:6px}
+
+/* pianificazione */
+.ancora{display:flex;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;width:max-content;margin-bottom:10px}
+.ancora button{border:0;background:var(--surface);padding:8px 16px;cursor:pointer}
+.ancora button[aria-pressed="true"]{background:var(--olive);color:var(--on-olive)}
+.quando{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.quando input{max-width:240px}
+
+.linea{list-style:none;margin:22px 0 0;padding:0;position:relative}
+.linea::before{content:"";position:absolute;left:68px;top:12px;bottom:12px;width:2px;background:var(--line)}
+.fase{display:grid;grid-template-columns:56px 1fr;column-gap:24px;padding:0 0 22px;position:relative}
+.fase::before{content:"";position:absolute;left:61px;top:9px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--crust)}
+.fase.fine::before{background:var(--crust)}
+.ora{text-align:right;font:600 21px/1.15 var(--serif);font-variant-numeric:tabular-nums;color:var(--crust)}
+.giorno{display:block;font:500 12px/1.3 var(--sans);color:var(--muted);margin-top:2px}
+.fase .nome{font-weight:600;font-size:17px;line-height:1.3;margin-top:3px}
+.fase .meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.dur{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden}
+.dur button{border:0;background:none;width:34px;height:32px;cursor:pointer;color:var(--olive);font-size:18px}
+.dur input{width:46px;border:0;background:none;text-align:center;font-variant-numeric:tabular-nums;padding:0}
+.dur .u{font-size:13px;color:var(--muted);padding-right:8px}
+.durtxt{font-size:14px;color:var(--muted)}
+.modif{font-size:12px;color:var(--crust)}
+.fase .nota{color:var(--muted);font-size:14px;margin:6px 0 0;line-height:1.45}
+.sovr{font-size:13px;color:var(--muted);margin-top:4px}
+.totale{color:var(--muted);margin-top:4px}
+
+.note{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.note p{margin:0}
+
+/* editor */
+.mod .gruppo{display:grid;gap:12px}
+.mod .riga{display:grid;grid-template-columns:1fr 84px 92px 36px;gap:6px;align-items:center}
+.mod .riga .inp{padding:8px}
+.mod .x{border:0;background:none;color:var(--danger);font-size:20px;cursor:pointer;height:36px}
+.mod .cartafase{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;display:grid;gap:8px}
+.mod .cartafase .alto{display:flex;gap:6px;align-items:center}
+.mod .cartafase .alto .inp{flex:1;font-weight:600}
+.mod .due{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mod textarea.inp{min-height:64px;resize:vertical}
+.mod .icona{border:1px solid var(--line);background:var(--bg);border-radius:8px;width:34px;height:34px;cursor:pointer}
+.err{color:var(--danger);margin-top:12px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:15px;z-index:20;max-width:90vw;opacity:0;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+.nascosto{display:none}
+.backup{margin-top:20px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.backup.avviso{border-color:var(--crust)}
+.backup p{margin:0}
+.backup .azioni{margin-top:10px}
+</style>
+</head>
+<body>
+<div class="barra" id="barra"></div>
+<main id="app"></main>
+<input type="file" id="fileimport" accept=".json,application/json" class="nascosto">
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+// Copia di sicurezza delle ricette predefinite: usata solo se la cartella ricette/ non si può leggere.
+const FALLBACK = /*FALLBACK*/[{"formato": 1, "id": "pane-semplice-fabio", "titolo": "Pane semplice di Fabio", "autore": "Fabio Franco, La Casa del Lievito", "descrizione": "Lievito madre semisolido al 75%, idratazione 70%. Farina W260–340.", "resa": {"nome": "pane", "nome_plurale": "pani", "pezzi": 2, "peso_pezzo_g": 750, "pesi_suggeriti": [750, 1200]}, "ingredienti": [{"id": "farina", "nome": "Farina W260/340", "qta": 1000, "unita": "g"}, {"id": "lievito", "nome": "Lievito madre semisolido", "qta": 250, "unita": "g"}, {"id": "acqua1", "nome": "Acqua (autolisi)", "qta": 650, "unita": "g"}, {"id": "acqua2", "nome": "Acqua (seconda dose)", "qta": 50, "unita": "g"}, {"id": "sale", "nome": "Sale", "qta": 20, "unita": "g"}, {"id": "olio", "nome": "Olio extravergine", "qta": 40, "unita": "g"}], "varianti": [{"id": "idr80", "nome": "Idratazione 80%", "modifiche": {"acqua2": 150}, "nota": "Solo se la farina lo regge: alveolatura più aperta, ma impasto più difficile da lavorare e maneggiare."}], "fasi": [{"id": "rinfresco", "nome": "Rinfresco del lievito madre", "durata_min": 210, "nota": "Lievito più che raddoppiato dal frigo, rinfresco 1:1:0,75. Segna il livello e usalo al raddoppio (3 h – 3 h 30' a 28°; più tempo se fa più fresco). Lievito liquido: rinfresco 1:1:1, pronto tra +50% e il raddoppio. Senza madre: pre-impasto con 200 g di farina, 150 g d'acqua a 25° e 2 g di lievito compresso, pronto tra il doppio e il triplo (3–4 h a 28°)."}, {"id": "autolisi", "nome": "Autolisi", "durata_min": 45, "sovrapponi_min": 45, "nota": "Farina e acqua dell'autolisi, 30–60 minuti. Si avvia mentre il lievito finisce di crescere."}, {"id": "impasto", "nome": "Impasto", "durata_min": 20, "nota": "Aggiungi il lievito e impasta. Formato il glutine: il sale, poi a poco a poco la seconda dose d'acqua, infine l'olio."}, {"id": "lievitazione", "nome": "Lievitazione in massa", "durata_min": 240, "nota": "Contenitore oliato, segna il livello. Quando si è alzato di qualche millimetro, una piega di rinforzo. Fermati a +80% di volume, poco prima del raddoppio. Se il frigo non sta a 4°, fermati a +50–60%."}, {"id": "preforma", "nome": "Divisione e pre-forma", "durata_min": 30, "nota": "Rovescia sul piano, dividi nelle pezzature e dai una pre-forma. Riposo 30 minuti."}, {"id": "formatura", "nome": "Formatura", "durata_min": 10, "nota": "Forma e metti nei cestini con la parte aperta verso l'alto. Subito in frigo, coperto."}, {"id": "frigo", "nome": "Notte in frigo a 4°", "durata_min": 600, "nota": "Il frigo deve stare a 4°, altrimenti il pane rischia di andare fuori lievitazione."}, {"id": "controllo", "nome": "Controllo della lievitazione", "durata_min": 15, "nota": "Deve essere leggermente gonfio ma non troppo cresciuto. Valuta se infornare subito o aspettare che completi la lievitazione: pronto da cuocere è circa il doppio del volume uscito dall'impastatrice."}, {"id": "cottura", "nome": "Cottura", "durata_min": 60, "durata_per_peso": [[750, 60], [1200, 80]], "nota": "Infarina il fondo, rovescia sulla pala, incidi. Forno statico con un po' di vapore all'inizio: 20' a 250°, 20' a 200°, 20' a 160°, sportello socchiuso negli ultimi 10'. Tempi per pezzi da 750 g; da 1200 g circa 80' in tutto."}], "note": "Seguire il volume, non l'orologio: i tempi di lievitazione sono indicativi. 100 g di madre semisolido si possono sostituire con 100 g di madre liquido o solido senza altre modifiche."}]/*FINE*/;
+
+const LS_PERS = "ricettario.personali";
+const LS_STATO = "ricettario.stato.";
+const LS_BACKUP = "ricettario.ultimoBackup", LS_MOD = "ricettario.modificato";
+let predefinite = [], personali = [];
+
+/* ---------- utilità ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function leggi(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+function scrivi(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { toast("Impossibile salvare sul dispositivo"); } }
+function numero(s) { const n = parseFloat(String(s).replace(/\s/g, "").replace(",", ".")); return isFinite(n) ? n : NaN; }
+function fmtNum(n, dec = 1) { return (Math.round(n * 10 ** dec) / 10 ** dec).toLocaleString("it-IT", {maximumFractionDigits: dec, useGrouping: false}); }
+function fmtQta(q) { return q >= 10 ? String(Math.round(q)) : fmtNum(q, 1); }
+function fmtDurata(m) { m = Math.round(m); const h = Math.floor(m / 60), r = m % 60; return h ? (r ? `${h} h ${r}'` : `${h} h`) : `${r}'`; }
+function slug(s) { return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "ricetta"; }
+function rnd() { return Math.random().toString(36).slice(2, 7); }
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
+
+/* ---------- formato ricetta ---------- */
+function normalizza(r) {
+  r = JSON.parse(JSON.stringify(r)); delete r._predef;
+  r.formato = r.formato || 1;
+  r.titolo = String(r.titolo || "").trim();
+  r.autore = r.autore || ""; r.descrizione = r.descrizione || ""; r.note = r.note || "";
+  const re = r.resa || {};
+  r.resa = {
+    nome: re.nome || "porzione",
+    nome_plurale: re.nome_plurale || re.nome || "porzioni",
+    pezzi: +re.pezzi > 0 ? +re.pezzi : 1,
+    peso_pezzo_g: +re.peso_pezzo_g > 0 ? +re.peso_pezzo_g : 0,
+    pezzi_base: +re.pezzi_base > 0 ? +re.pezzi_base : (+re.pezzi > 0 ? +re.pezzi : 1),
+    pesi_suggeriti: Array.isArray(re.pesi_suggeriti) ? re.pesi_suggeriti.filter(x => +x > 0).map(Number) : []
+  };
+  const visti = new Set();
+  const unico = (base) => { let id = slug(base) || "x", i = 2; while (visti.has(id)) id = slug(base) + "-" + i++; visti.add(id); return id; };
+  r.ingredienti = (r.ingredienti || []).map(g => ({ id: g.id && !visti.has(g.id) ? (visti.add(g.id), g.id) : unico(g.nome), nome: String(g.nome || ""), qta: +g.qta || 0, unita: g.unita || "g" }));
+  visti.clear();
+  r.fasi = (r.fasi || []).map(f => {
+    const o = { id: f.id && !visti.has(f.id) ? (visti.add(f.id), f.id) : unico(f.nome), nome: String(f.nome || ""), durata_min: Math.max(0, +f.durata_min || 0), nota: f.nota || "" };
+    if (+f.sovrapponi_min > 0) o.sovrapponi_min = +f.sovrapponi_min;
+    if (Array.isArray(f.durata_per_peso) && f.durata_per_peso.length) o.durata_per_peso = f.durata_per_peso.filter(p => Array.isArray(p) && p.length === 2).map(p => [+p[0], +p[1]]);
+    return o;
+  });
+  r.varianti = (r.varianti || []).filter(v => v && v.nome).map((v, i) => ({ id: v.id || "v" + i, nome: v.nome, nota: v.nota || "", modifiche: v.modifiche || {} }));
+  return r;
+}
+function valida(r) {
+  if (!r || typeof r !== "object") return "Il file non contiene una ricetta.";
+  if (!String(r.titolo || "").trim()) return "Manca il titolo della ricetta.";
+  if (!Array.isArray(r.ingredienti)) return "Manca l'elenco degli ingredienti.";
+  if (!Array.isArray(r.fasi)) return "Manca l'elenco delle fasi.";
+  if (r.formato && r.formato > 1) return "Questo file usa un formato più recente: aggiorna l'app.";
+  for (const g of r.ingredienti) if (!g || !String(g.nome || "").trim() || !isFinite(+g.qta)) return "Ogni ingrediente deve avere nome e quantità.";
+  for (const f of r.fasi) if (!f || !String(f.nome || "").trim() || !isFinite(+f.durata_min)) return "Ogni fase deve avere nome e durata in minuti.";
+  return "";
+}
+function perEsportare(r) {
+  const o = JSON.parse(JSON.stringify(r)); delete o._predef;
+  if (!o.varianti.length) delete o.varianti;
+  return o;
+}
+
+/* ---------- caricamento ---------- */
+async function caricaPredefinite() {
+  try {
+    const r = await fetch("ricette/indice.json", { cache: "no-cache" });
+    if (!r.ok) throw new Error();
+    const elenco = await r.json();
+    const out = [];
+    for (const f of elenco) {
+      try { const j = await (await fetch("ricette/" + f, { cache: "no-cache" })).json(); if (!valida(j)) out.push(j); } catch (e) {}
+    }
+    if (out.length) return out;
+  } catch (e) {}
+  return FALLBACK;
+}
+function trova(id) {
+  return personali.find(r => r.id === id) || predefinite.find(r => r.id === id) || null;
+}
+
+/* ---------- calcoli ---------- */
+function statoDi(r) {
+  const s = leggi(LS_STATO + r.id, null) || {};
+  if (!(s.pezzi > 0)) s.pezzi = r.resa.pezzi;
+  if (!(s.peso > 0)) s.peso = r.resa.peso_pezzo_g;
+  s.varianti = Array.isArray(s.varianti) ? s.varianti.filter(id => r.varianti.some(v => v.id === id)) : [];
+  s.durate = s.durate || {};
+  s.ancora = s.ancora === "fine" ? "fine" : "inizio";
+  if (!s.orario) s.orario = orarioPredefinito();
+  return s;
+}
+function salvaStato(r, s) { scrivi(LS_STATO + r.id, s); }
+function orarioPredefinito() {
+  const d = new Date(); d.setSeconds(0, 0); d.setMinutes(Math.ceil(d.getMinutes() / 15) * 15);
+  return locale(d);
+}
+function locale(d) { const p = n => String(n).padStart(2, "0"); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; }
+function qtaBase(r, s) {
+  const m = {};
+  r.ingredienti.forEach(g => m[g.id] = g.qta);
+  r.varianti.filter(v => s.varianti.includes(v.id)).forEach(v => Object.entries(v.modifiche).forEach(([id, q]) => { if (id in m) m[id] = +q; }));
+  return m;
+}
+function totaleBase(r, s) { const m = qtaBase(r, s); return r.ingredienti.filter(g => g.unita === "g").reduce((a, g) => a + m[g.id], 0); }
+const modoPeso = (r, s) => r.resa.peso_pezzo_g > 0 && totaleBase(r, s) > 0;
+function fattore(r, s) { return modoPeso(r, s) ? s.pezzi * s.peso / totaleBase(r, s) : s.pezzi / r.resa.pezzi_base; }
+function pezziDaFattore(r, s, f) { return modoPeso(r, s) ? f * totaleBase(r, s) / s.peso : f * r.resa.pezzi_base; }
+
+function interpola(punti, x) {
+  const p = [...punti].sort((a, b) => a[0] - b[0]);
+  if (x <= p[0][0]) return p[0][1];
+  if (x >= p[p.length - 1][0]) return p[p.length - 1][1];
+  for (let i = 1; i < p.length; i++) if (x <= p[i][0]) { const [x0, y0] = p[i - 1], [x1, y1] = p[i]; return y0 + (y1 - y0) * (x - x0) / (x1 - x0); }
+  return p[p.length - 1][1];
+}
+function durataPredef(r, s, f) {
+  if (f.durata_per_peso && f.durata_per_peso.length && modoPeso(r, s)) return Math.round(interpola(f.durata_per_peso, s.peso) / 5) * 5;
+  return f.durata_min;
+}
+function durata(r, s, f) { return s.durate[f.id] != null ? s.durate[f.id] : durataPredef(r, s, f); }
+function pianifica(r, s) {
+  let cur = 0; const voci = [];
+  r.fasi.forEach((f, i) => {
+    const d = durata(r, s, f);
+    const start = i ? Math.max(0, cur - (f.sovrapponi_min || 0)) : 0;
+    const end = start + d;
+    voci.push({ f, start, end, d });
+    cur = Math.max(cur, end);
+  });
+  const ref = new Date(s.orario);
+  const t0 = isNaN(ref) ? new Date() : (s.ancora === "inizio" ? ref : new Date(ref.getTime() - cur * 60000));
+  return { voci, totale: cur, t0 };
+}
+
+/* ---------- condivisione file ---------- */
+async function condividiFile(nome, testo, mime) {
+  const file = new File([testo], nome, { type: mime });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file] }); return true; } catch (e) { if (e.name === "AbortError") return false; }
+  }
+  scarica(file, nome);
+  return true;
+}
+function scarica(blob, nome) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+/* ---------- ricette personali, backup e link ---------- */
+function salvaPersonali() { scrivi(LS_PERS, personali); scrivi(LS_MOD, Date.now()); }
+function contenuto(r) { const o = perEsportare(r); delete o.id; delete o.aggiornata; return JSON.stringify(o); }
+function aggiungiPersonale(j) {
+  const r = normalizza(j);
+  const uguale = personali.find(p => contenuto(p) === contenuto(r));
+  if (uguale) return uguale;
+  r.id = "mia-" + slug(r.titolo) + "-" + rnd();
+  r.aggiornata = Date.now();
+  personali.push(r); salvaPersonali();
+  return r;
+}
+async function faiBackup() {
+  if (!personali.length) { toast("Non ci sono ricette personali da salvare"); return; }
+  const dati = { tipo: "ricettario-backup", formato: 1, creato: new Date().toISOString(), ricette: personali.map(perEsportare) };
+  const ok = await condividiFile("ricettario-backup.json", JSON.stringify(dati, null, 1), "application/json");
+  if (ok) { scrivi(LS_BACKUP, Date.now()); if (!location.hash || location.hash === "#/") vistaElenco(); }
+}
+function ripristina(j) {
+  if (!Array.isArray(j.ricette)) { toast("Il backup è danneggiato: manca l'elenco delle ricette"); return; }
+  let nuove = 0, agg = 0;
+  j.ricette.forEach(x => {
+    if (valida(x)) return;
+    const r = normalizza(x);
+    if (!String(r.id || "").startsWith("mia-")) r.id = "mia-" + slug(r.titolo) + "-" + rnd();
+    const i = personali.findIndex(p => p.id === r.id);
+    if (i < 0) { personali.push(r); nuove++; }
+    else if ((r.aggiornata || 0) > (personali[i].aggiornata || 0)) { personali[i] = r; agg++; }
+  });
+  if (nuove || agg) salvaPersonali();
+  toast(nuove || agg ? `Backup ripristinato: ${nuove} ${nuove === 1 ? "nuova" : "nuove"}, ${agg} ${agg === 1 ? "aggiornata" : "aggiornate"}` : "Le ricette del backup sono già tutte qui");
+  location.hash = "#/"; instrada();
+}
+function quando(ts) {
+  const g = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x.getTime(); };
+  const giorni = Math.round((g(Date.now()) - g(ts)) / 864e5);
+  return new Intl.RelativeTimeFormat("it", { numeric: "auto" }).format(-giorni, "day");
+}
+function b64u(bytes) {
+  let bin = ""; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function daB64u(s) {
+  s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "=";
+  const bin = atob(s), out = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i); return out;
+}
+async function codifica(obj) {
+  const bytes = new TextEncoder().encode(JSON.stringify(obj));
+  if (window.CompressionStream) {
+    const flusso = new Blob([bytes]).stream().pipeThrough(new CompressionStream("deflate-raw"));
+    return "z" + b64u(new Uint8Array(await new Response(flusso).arrayBuffer()));
+  }
+  return "j" + b64u(bytes);
+}
+async function decodifica(codice) {
+  let bytes = daB64u(codice.slice(1));
+  if (codice[0] === "z") {
+    const flusso = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+    bytes = new Uint8Array(await new Response(flusso).arrayBuffer());
+  } else if (codice[0] !== "j") throw new Error("formato");
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+async function condividiLink(r) {
+  const o = perEsportare(r); delete o.aggiornata;
+  const url = location.href.split("#")[0] + "#/importa/" + await codifica(o);
+  if (navigator.share) {
+    try { await navigator.share({ title: r.titolo, url }); return; } catch (e) { if (e.name === "AbortError") return; }
+  }
+  try { await navigator.clipboard.writeText(url); toast("Link copiato"); } catch (e) { prompt("Copia questo link", url); }
+}
+async function incollaLink() {
+  let t = "";
+  try { t = await navigator.clipboard.readText(); } catch (e) {}
+  if (!/#\/importa\//.test(t)) t = prompt("Incolla qui il link della ricetta") || "";
+  const m = t.match(/#\/importa\/([A-Za-z0-9_-]+)/);
+  if (!m) { if (t) toast("Questo non è il link di una ricetta"); return; }
+  location.hash = "#/importa/" + m[1];
+}
+
+function creaIcs(r, s) {
+  const { voci, t0 } = pianifica(r, s);
+  const p = n => String(n).padStart(2, "0");
+  const loc = d => `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}T${p(d.getHours())}${p(d.getMinutes())}00`;
+  const utc = d => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const tx = s => String(s).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+  const righe = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Ricettario//IT", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
+  const ora = utc(new Date());
+  voci.forEach(v => {
+    const a = new Date(t0.getTime() + v.start * 60000), b = new Date(t0.getTime() + Math.max(v.end, v.start + 5) * 60000);
+    righe.push("BEGIN:VEVENT", `UID:${r.id}-${v.f.id}-${a.getTime()}@ricettario`, `DTSTAMP:${ora}`, `DTSTART:${loc(a)}`, `DTEND:${loc(b)}`,
+      `SUMMARY:${tx(v.f.nome + " · " + r.titolo)}`, `DESCRIPTION:${tx(v.f.nota)}`,
+      "BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${tx(v.f.nome)}`, "TRIGGER:PT0M", "END:VALARM", "END:VEVENT");
+  });
+  righe.push("END:VCALENDAR");
+  return righe.join("\r\n");
+}
+
+/* ---------- barra ---------- */
+function barra(indietro, titolino = "") {
+  $("#barra").innerHTML = indietro
+    ? `<button class="indietro" id="indietro">‹ ${esc(indietro.testo)}</button><span class="spazio"></span><span class="titolino" id="titolino"></span>`
+    : `<span class="titolino">Ricettario</span>`;
+  if (indietro) $("#indietro").onclick = () => { location.hash = indietro.hash; };
+}
+addEventListener("scroll", () => $("#barra").classList.toggle("ombra", scrollY > 4), { passive: true });
+
+/* ---------- vista elenco ---------- */
+function vistaElenco() {
+  barra(null);
+  const ultimo = leggi(LS_BACKUP, 0), mod = leggi(LS_MOD, 0);
+  const daFare = personali.length > 0 && (!ultimo || mod > ultimo);
+  const voce = r => {
+    const s = r.resa.peso_pezzo_g ? `${r.resa.pezzi} ${r.resa.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale} da ${r.resa.peso_pezzo_g} g` : `${r.resa.pezzi} ${r.resa.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale}`;
+    return `<li><a href="#/r/${encodeURIComponent(r.id)}"><div class="t">${esc(r.titolo)}</div><div class="s">${esc(r.autore ? r.autore : s)}</div></a></li>`;
+  };
+  $("#app").innerHTML = `
+    <h1>Ricette</h1>
+    <h2>Predefinite</h2>
+    ${predefinite.length ? `<ul class="elenco">${predefinite.map(voce).join("")}</ul>` : `<p class="vuoto">Nessuna ricetta predefinita trovata.</p>`}
+    <h2>Le mie ricette</h2>
+    ${personali.length ? `<ul class="elenco">${personali.map(voce).join("")}</ul>` : `<p class="vuoto">Le ricette che crei o importi compaiono qui.</p>`}
+    <div class="azioni">
+      <button class="btn prim" id="nuova">Nuova ricetta</button>
+      <button class="btn" id="incolla">Incolla link</button>
+      <button class="btn" id="importa">Importa file</button>
+    </div>
+    ${personali.length || ultimo ? `<div class="backup${daFare ? " avviso" : ""}">
+      <p>${ultimo ? `Ultimo backup ${esc(quando(ultimo))}.` : "Non hai ancora fatto un backup."}${daFare && ultimo ? " Ci sono modifiche successive." : ""}</p>
+      <p class="aiuto">Salvalo su iCloud Drive con "Salva su File", sempre con lo stesso nome: il nuovo sostituisce il vecchio.</p>
+      <div class="azioni"><button class="btn${daFare ? " prim" : ""}" id="backup">Fai backup</button><button class="btn" id="ripristina">Ripristina backup</button></div>
+    </div>` : ""}`;
+  $("#nuova").onclick = () => location.hash = "#/nuova";
+  $("#importa").onclick = () => $("#fileimport").click();
+  $("#incolla").onclick = incollaLink;
+  if ($("#backup")) { $("#backup").onclick = faiBackup; $("#ripristina").onclick = () => $("#fileimport").click(); }
+}
+
+$("#fileimport").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  let j;
+  try { j = JSON.parse(await f.text()); } catch (err) { toast("Il file non è leggibile: serve un file .ricetta.json o un backup del ricettario"); return; }
+  if (j && j.tipo === "ricettario-backup") { ripristina(j); return; }
+  const errore = valida(j);
+  if (errore) { toast(errore); return; }
+  const r = aggiungiPersonale(j);
+  toast(`Importata: ${r.titolo}`);
+  location.hash = "#/r/" + encodeURIComponent(r.id);
+});
+
+/* ---------- vista ricetta ---------- */
+function vistaRicetta(id) {
+  const r = trova(id);
+  if (!r) { location.hash = "#/"; return; }
+  const s = statoDi(r);
+  const mia = !r._predef;
+  barra({ testo: "Ricette", hash: "#/" });
+  $("#titolino").textContent = r.titolo;
+
+  const pl = n => (Math.abs(n - 1) < 1e-9 ? r.resa.nome : r.resa.nome_plurale);
+  $("#app").innerHTML = `
+    <h1>${esc(r.titolo)}</h1>
+    ${r.autore ? `<p class="autore">${esc(r.autore)}</p>` : ""}
+    ${r.descrizione ? `<p class="desc">${esc(r.descrizione)}</p>` : ""}
+
+    <h2>Dosi</h2>
+    <div class="resa">
+      <div class="campo">
+        <label for="pezzi" id="lblpezzi">Numero di ${esc(r.resa.nome_plurale)}</label>
+        <div class="passo"><button aria-label="Meno" data-passo="-1">−</button><input id="pezzi" inputmode="decimal" autocomplete="off"><button aria-label="Più" data-passo="1">+</button></div>
+      </div>
+      ${r.resa.peso_pezzo_g ? `
+      <div class="campo">
+        <label for="peso">Peso di ogni ${esc(r.resa.nome)} (g)</label>
+        <input id="peso" class="inp num" inputmode="decimal" autocomplete="off" value="${esc(fmtQta(s.peso))}">
+      </div>` : ""}
+    </div>
+    ${((r.resa.peso_pezzo_g && r.resa.pesi_suggeriti.length) || r.varianti.length) ? `<div class="pillole">
+      ${(r.resa.peso_pezzo_g ? r.resa.pesi_suggeriti : []).map(p => `<button class="pillola" data-peso="${p}" aria-pressed="${s.peso === p}">${p} g</button>`).join("")}
+      ${r.varianti.map(v => `<button class="pillola" data-var="${esc(v.id)}" aria-pressed="${s.varianti.includes(v.id)}">${esc(v.nome)}</button>`).join("")}
+    </div>` : ""}
+    <div id="notevar"></div>
+    <table class="ingr"><tbody>
+      ${r.ingredienti.map(g => `<tr><td class="n">${esc(g.nome)}<span class="variata" data-variata="${esc(g.id)}"></span></td>
+        <td class="q"><input class="qta" data-ing="${esc(g.id)}" inputmode="decimal" autocomplete="off" aria-label="${esc(g.nome)}"><span class="u">${esc(g.unita)}</span></td></tr>`).join("")}
+      <tr class="tot"><td>Totale impasto</td><td class="q"><span class="val" id="totale"></span><span class="u">g</span></td></tr>
+    </tbody></table>
+    <p class="aiuto">Modifica una quantità qualsiasi: tutte le altre si adeguano.</p>
+
+    <h2>Tempi</h2>
+    <div class="ancora" role="group" aria-label="Riferimento orario">
+      <button data-ancora="inizio" aria-pressed="${s.ancora === "inizio"}">Inizio</button>
+      <button data-ancora="fine" aria-pressed="${s.ancora === "fine"}">Fine</button>
+    </div>
+    <div class="quando">
+      <input type="datetime-local" id="orario" class="inp" value="${esc(s.orario)}">
+      <button class="btn piccolo" id="adesso">Adesso</button>
+    </div>
+    <p class="totale" id="totaletempi"></p>
+    <ol class="linea" id="linea"></ol>
+    <div class="azioni">
+      <button class="btn" id="calendario">Aggiungi al Calendario</button>
+      <button class="btn" id="ripristina">Ripristina tempi</button>
+    </div>
+
+    ${r.note ? `<h2>Note</h2><div class="note"><p>${esc(r.note)}</p></div>` : ""}
+
+    <h2>Ricetta</h2>
+    <div class="azioni">
+      ${mia ? `<button class="btn" id="modifica">Modifica</button>` : `<button class="btn" id="duplica">Duplica e modifica</button>`}
+      <button class="btn" id="link">Condividi link</button>
+      <button class="btn" id="esporta">Esporta file</button>
+      ${mia ? `<button class="btn peric" id="elimina">Elimina</button>` : ""}
+    </div>`;
+
+  const aggiornaDosi = (attivo) => {
+    const f = fattore(r, s), m = qtaBase(r, s);
+    const pz = $("#pezzi"); if (pz !== attivo) pz.value = fmtNum(s.pezzi, 2);
+    $("#lblpezzi").textContent = `Numero di ${r.resa.nome_plurale}`;
+    let tot = 0;
+    r.ingredienti.forEach(g => {
+      const q = m[g.id] * f; if (g.unita === "g") tot += q;
+      const el = $(`[data-ing="${CSS.escape(g.id)}"]`); if (el !== attivo) el.value = fmtQta(q);
+      $(`[data-variata="${CSS.escape(g.id)}"]`).textContent = m[g.id] !== g.qta ? "variante" : "";
+    });
+    $("#totale").textContent = fmtQta(tot);
+    $("#notevar").innerHTML = r.varianti.filter(v => s.varianti.includes(v.id) && v.nota).map(v => `<p class="aiuto">${esc(v.nota)}</p>`).join("");
+  };
+
+  const aggiornaTempi = () => {
+    const { voci, totale, t0 } = pianifica(r, s);
+    const giornoDi = d => d.toLocaleDateString("it-IT", { weekday: "short", day: "numeric", month: "short" });
+    const ora = d => d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    let ultimoGiorno = "";
+    const etichetta = d => { const g = d.toDateString(); if (g === ultimoGiorno) return ""; ultimoGiorno = g; return `<span class="giorno">${esc(giornoDi(d))}</span>`; };
+    const fine = new Date(t0.getTime() + totale * 60000);
+    $("#totaletempi").textContent = `Durata complessiva ${fmtDurata(totale)}`;
+    $("#linea").innerHTML = voci.map(v => {
+      const a = new Date(t0.getTime() + v.start * 60000);
+      const cambiata = s.durate[v.f.id] != null && s.durate[v.f.id] !== durataPredef(r, s, v.f);
+      return `<li class="fase"><div class="ora">${esc(ora(a))}${etichetta(a)}</div>
+        <div><div class="nome">${esc(v.f.nome)}</div>
+          <div class="meta">
+            <div class="dur"><button data-dmeno="${esc(v.f.id)}" aria-label="Meno 15 minuti">−</button><input data-dur="${esc(v.f.id)}" inputmode="numeric" value="${v.d}" aria-label="Durata in minuti di ${esc(v.f.nome)}"><span class="u">min</span><button data-dpiu="${esc(v.f.id)}" aria-label="Più 15 minuti">+</button></div>
+            <span class="durtxt">${fmtDurata(v.d)}</span>${cambiata ? `<span class="modif">modificato</span>` : ""}
+          </div>
+          ${v.f.sovrapponi_min ? `<div class="sovr">Parte ${fmtDurata(v.f.sovrapponi_min)} prima della fine della fase precedente</div>` : ""}
+          ${v.f.nota ? `<p class="nota">${esc(v.f.nota)}</p>` : ""}
+        </div></li>`;
+    }).join("") + `<li class="fase fine"><div class="ora">${esc(ora(fine))}${etichetta(fine)}</div><div><div class="nome">${r.resa.nome === "pane" ? "Pane pronto" : "Fine"}</div></div></li>`;
+  };
+
+  const salva = () => salvaStato(r, s);
+  const impostaPezzi = n => { if (n > 0) { s.pezzi = n; salva(); } };
+
+  $("#pezzi").addEventListener("input", e => { const n = numero(e.target.value); if (n > 0) { impostaPezzi(n); aggiornaDosi(e.target); aggiornaTempi(); } });
+  $("#pezzi").addEventListener("change", () => aggiornaDosi(null));
+  document.querySelectorAll("[data-passo]").forEach(b => b.onclick = () => {
+    const passo = +b.dataset.passo, cur = s.pezzi;
+    const n = passo > 0 ? Math.floor(cur + 1e-9) + 1 : Math.ceil(cur - 1e-9) - 1;
+    if (n >= 1) { impostaPezzi(n); aggiornaDosi(null); }
+  });
+  const peso = $("#peso");
+  if (peso) {
+    peso.addEventListener("input", e => { const n = numero(e.target.value); if (n > 0) { s.peso = n; salva(); aggiornaDosi(null); aggiornaTempi(); aggiornaPillole(); } });
+    peso.addEventListener("change", e => e.target.value = fmtQta(s.peso));
+  }
+  const aggiornaPillole = () => document.querySelectorAll("[data-peso]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.peso === s.peso)));
+  document.querySelectorAll("[data-peso]").forEach(b => b.onclick = () => { s.peso = +b.dataset.peso; salva(); peso.value = fmtQta(s.peso); aggiornaPillole(); aggiornaDosi(null); aggiornaTempi(); });
+  document.querySelectorAll("[data-var]").forEach(b => b.onclick = () => {
+    const id = b.dataset.var;
+    s.varianti = s.varianti.includes(id) ? s.varianti.filter(x => x !== id) : [...s.varianti, id];
+    b.setAttribute("aria-pressed", String(s.varianti.includes(id)));
+    salva(); aggiornaDosi(null); aggiornaTempi();
+  });
+  document.querySelectorAll("[data-ing]").forEach(el => {
+    el.addEventListener("input", () => {
+      const n = numero(el.value), base = qtaBase(r, s)[el.dataset.ing];
+      if (n > 0 && base > 0) { impostaPezzi(pezziDaFattore(r, s, n / base)); aggiornaDosi(el); }
+    });
+    el.addEventListener("change", () => aggiornaDosi(null));
+    el.addEventListener("focus", () => el.select());
+  });
+
+  document.querySelectorAll("[data-ancora]").forEach(b => b.onclick = () => {
+    s.ancora = b.dataset.ancora; salva();
+    document.querySelectorAll("[data-ancora]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    aggiornaTempi();
+  });
+  $("#orario").addEventListener("change", e => { if (e.target.value) { s.orario = e.target.value; salva(); aggiornaTempi(); } });
+  $("#adesso").onclick = () => { s.orario = orarioPredefinito(); $("#orario").value = s.orario; salva(); aggiornaTempi(); };
+
+  const linea = $("#linea");
+  const impostaDurata = (id, m) => { s.durate[id] = Math.max(0, Math.round(m)); salva(); aggiornaTempi(); };
+  linea.addEventListener("click", e => {
+    const t = e.target.closest("button"); if (!t) return;
+    const f = r.fasi.find(x => x.id === (t.dataset.dmeno || t.dataset.dpiu)); if (!f) return;
+    impostaDurata(f.id, durata(r, s, f) + (t.dataset.dpiu ? 15 : -15));
+  });
+  linea.addEventListener("change", e => {
+    const id = e.target.dataset.dur; if (!id) return;
+    const n = numero(e.target.value); if (n >= 0) impostaDurata(id, n); else aggiornaTempi();
+  });
+  $("#ripristina").onclick = () => { s.durate = {}; salva(); aggiornaTempi(); toast("Tempi ripristinati"); };
+  $("#calendario").onclick = () => {
+    const testo = creaIcs(r, s);
+    scarica(new Blob([testo], { type: "text/calendar" }), slug(r.titolo) + ".ics");
+  };
+
+  $("#link").onclick = () => condividiLink(r);
+  $("#esporta").onclick = () => condividiFile(slug(r.titolo) + ".ricetta.json", JSON.stringify(perEsportare(r), null, 2), "application/json");
+  if (mia) {
+    $("#modifica").onclick = () => location.hash = "#/modifica/" + encodeURIComponent(r.id);
+    $("#elimina").onclick = () => {
+      if (!confirm(`Eliminare "${r.titolo}"? L'operazione non si può annullare.`)) return;
+      personali = personali.filter(x => x.id !== r.id); salvaPersonali();
+      try { localStorage.removeItem(LS_STATO + r.id); } catch (e) {}
+      toast("Ricetta eliminata"); location.hash = "#/";
+    };
+  } else {
+    $("#duplica").onclick = () => location.hash = "#/duplica/" + encodeURIComponent(r.id);
+  }
+
+  aggiornaDosi(null);
+  aggiornaTempi();
+}
+
+/* ---------- editor ---------- */
+const UNITA = ["g", "ml", "pz", "cucchiaini"];
+function vistaEditor(modo, id) {
+  let b;
+  if (modo === "nuova") {
+    b = normalizza({ titolo: "", resa: { nome: "porzione", nome_plurale: "porzioni", pezzi: 4 }, ingredienti: [{ nome: "", qta: 0, unita: "g" }], fasi: [{ nome: "", durata_min: 30 }] });
+    b.titolo = "";
+  } else {
+    const o = trova(id);
+    if (!o) { location.hash = "#/"; return; }
+    b = normalizza(o);
+    if (modo === "duplica") { b.titolo = o.titolo + " (mia versione)"; }
+  }
+  const idOrig = modo === "modifica" ? id : null;
+  barra({ testo: "Annulla", hash: idOrig ? "#/r/" + encodeURIComponent(idOrig) : (modo === "duplica" ? "#/r/" + encodeURIComponent(id) : "#/") });
+  $("#titolino").textContent = modo === "nuova" ? "Nuova ricetta" : "Modifica";
+
+  const disegna = () => {
+    const R = b.resa;
+    $("#app").innerHTML = `<div class="mod">
+      <h1>${modo === "nuova" ? "Nuova ricetta" : "Modifica ricetta"}</h1>
+      <div class="gruppo">
+        <div class="campo"><label for="e-titolo">Titolo</label><input id="e-titolo" class="inp" data-k="titolo" value="${esc(b.titolo)}"></div>
+        <div class="campo"><label for="e-autore">Autore o fonte</label><input id="e-autore" class="inp" data-k="autore" value="${esc(b.autore)}"></div>
+        <div class="campo"><label for="e-desc">Descrizione breve</label><input id="e-desc" class="inp" data-k="descrizione" value="${esc(b.descrizione)}"></div>
+      </div>
+
+      <h2>Cosa si ottiene</h2>
+      <div class="gruppo">
+        <div class="due">
+          <div class="campo"><label for="e-n1">Nome al singolare</label><input id="e-n1" class="inp" data-r="nome" value="${esc(R.nome)}"></div>
+          <div class="campo"><label for="e-n2">Al plurale</label><input id="e-n2" class="inp" data-r="nome_plurale" value="${esc(R.nome_plurale)}"></div>
+        </div>
+        <div class="due">
+          <div class="campo"><label for="e-pz">Quantità proposta</label><input id="e-pz" class="inp" inputmode="decimal" data-rn="pezzi" value="${esc(fmtNum(R.pezzi, 2))}"></div>
+          <div class="campo"><label for="e-peso">Peso di ognuno (g)</label><input id="e-peso" class="inp" inputmode="decimal" data-rn="peso_pezzo_g" value="${R.peso_pezzo_g ? esc(fmtQta(R.peso_pezzo_g)) : ""}" placeholder="facoltativo"></div>
+        </div>
+        <div class="campo" id="e-basewrap" ${R.peso_pezzo_g ? 'hidden' : ''}><label for="e-base">Le quantità qui sotto bastano per</label><input id="e-base" class="inp" inputmode="decimal" data-rn="pezzi_base" value="${esc(fmtNum(R.pezzi_base, 2))}" style="max-width:120px"></div>
+        <p class="aiuto">Con il peso, le dosi si calcolano dal peso totale in grammi degli ingredienti. Senza peso, si proporzionano al numero.</p>
+      </div>
+
+      <h2>Ingredienti</h2>
+      <div class="gruppo">
+        ${b.ingredienti.map((g, i) => `<div class="riga">
+          <input class="inp" data-gi="${i}" data-gk="nome" value="${esc(g.nome)}" placeholder="Ingrediente" aria-label="Nome ingrediente">
+          <input class="inp" style="text-align:right" inputmode="decimal" data-gi="${i}" data-gk="qta" value="${g.qta ? esc(fmtNum(g.qta, 2)) : ""}" placeholder="0" aria-label="Quantità">
+          <select class="inp" data-gi="${i}" data-gk="unita" aria-label="Unità">${UNITA.concat(UNITA.includes(g.unita) ? [] : [g.unita]).map(u => `<option ${u === g.unita ? "selected" : ""}>${esc(u)}</option>`).join("")}</select>
+          <button class="x" data-gdel="${i}" aria-label="Rimuovi ${esc(g.nome || "ingrediente")}">×</button>
+        </div>`).join("")}
+        <div><button class="btn piccolo" id="e-addg">Aggiungi ingrediente</button></div>
+      </div>
+
+      <h2>Fasi</h2>
+      <div class="gruppo">
+        ${b.fasi.map((f, i) => `<div class="cartafase">
+          <div class="alto">
+            <input class="inp" data-fi="${i}" data-fk="nome" value="${esc(f.nome)}" placeholder="Nome della fase" aria-label="Nome della fase">
+            <button class="icona" data-fsu="${i}" aria-label="Sposta su" ${i ? "" : "disabled"}>↑</button>
+            <button class="icona" data-fgiu="${i}" aria-label="Sposta giù" ${i < b.fasi.length - 1 ? "" : "disabled"}>↓</button>
+            <button class="x" data-fdel="${i}" aria-label="Rimuovi fase">×</button>
+          </div>
+          <div class="due">
+            <div class="campo"><label>Durata (minuti)</label><input class="inp" inputmode="numeric" data-fi="${i}" data-fk="durata_min" value="${f.durata_min}"></div>
+            ${i ? `<div class="campo"><label>Anticipa di (minuti)</label><input class="inp" inputmode="numeric" data-fi="${i}" data-fk="sovrapponi_min" value="${f.sovrapponi_min || ""}" placeholder="0"></div>` : "<div></div>"}
+          </div>
+          ${i ? `<p class="aiuto" style="margin:0">"Anticipa" fa partire la fase prima che finisca la precedente, come un'autolisi preparata mentre il lievito cresce.</p>` : ""}
+          ${f.durata_per_peso ? `<p class="aiuto" style="margin:0">Questa fase adatta la durata al peso dei pezzi (dal file della ricetta).</p>` : ""}
+          <textarea class="inp" data-fi="${i}" data-fk="nota" placeholder="Istruzioni" aria-label="Istruzioni">${esc(f.nota)}</textarea>
+        </div>`).join("")}
+        <div><button class="btn piccolo" id="e-addf">Aggiungi fase</button></div>
+      </div>
+
+      ${b.varianti.length ? `<h2>Varianti</h2><p class="aiuto">${b.varianti.map(v => esc(v.nome)).join(", ")}. Restano come sono; si modificano dal file della ricetta.</p>` : ""}
+
+      <h2>Note</h2>
+      <textarea class="inp" data-k="note" style="min-height:96px" aria-label="Note">${esc(b.note)}</textarea>
+
+      <p class="err" id="e-err" role="alert"></p>
+      <div class="azioni"><button class="btn prim" id="e-salva">Salva ricetta</button></div>
+    </div>`;
+  };
+
+  const app = $("#app");
+  app.oninput = e => {
+    const t = e.target, d = t.dataset;
+    if (d.k) b[d.k] = t.value;
+    else if (d.r) b.resa[d.r] = t.value;
+    else if (d.rn) { const n = numero(t.value); b.resa[d.rn] = n > 0 ? n : 0; if (d.rn === "peso_pezzo_g") $("#e-basewrap").hidden = n > 0; }
+    else if (d.gi != null) { const g = b.ingredienti[+d.gi]; g[d.gk] = d.gk === "qta" ? (numero(t.value) || 0) : t.value; }
+    else if (d.fi != null) { const f = b.fasi[+d.fi]; if (d.fk === "durata_min" || d.fk === "sovrapponi_min") f[d.fk] = Math.max(0, numero(t.value) || 0); else f[d.fk] = t.value; }
+  };
+  app.onchange = app.oninput;
+  app.onclick = e => {
+    const t = e.target.closest("button"); if (!t) return;
+    const d = t.dataset;
+    if (t.id === "e-addg") { b.ingredienti.push({ id: "", nome: "", qta: 0, unita: "g" }); disegna(); app.querySelectorAll('[data-gk="nome"]').forEach((x, i, a) => i === a.length - 1 && x.focus()); }
+    else if (t.id === "e-addf") { b.fasi.push({ id: "", nome: "", durata_min: 30, nota: "" }); disegna(); app.querySelectorAll('[data-fk="nome"]').forEach((x, i, a) => i === a.length - 1 && x.focus()); }
+    else if (d.gdel != null) { b.ingredienti.splice(+d.gdel, 1); disegna(); }
+    else if (d.fdel != null) { b.fasi.splice(+d.fdel, 1); disegna(); }
+    else if (d.fsu != null) { const i = +d.fsu; [b.fasi[i - 1], b.fasi[i]] = [b.fasi[i], b.fasi[i - 1]]; disegna(); }
+    else if (d.fgiu != null) { const i = +d.fgiu; [b.fasi[i + 1], b.fasi[i]] = [b.fasi[i], b.fasi[i + 1]]; disegna(); }
+    else if (t.id === "e-salva") salvaBozza();
+  };
+
+  const salvaBozza = () => {
+    const err = $("#e-err");
+    b.ingredienti = b.ingredienti.filter(g => String(g.nome).trim());
+    b.fasi = b.fasi.filter(f => String(f.nome).trim());
+    if (!String(b.titolo).trim()) { err.textContent = "Scrivi un titolo."; return; }
+    if (!b.ingredienti.length) { err.textContent = "Aggiungi almeno un ingrediente."; disegna(); return; }
+    if (!b.fasi.length) { err.textContent = "Aggiungi almeno una fase."; disegna(); return; }
+    if (b.resa.peso_pezzo_g && !b.ingredienti.some(g => g.unita === "g" && g.qta > 0)) { err.textContent = "Per calcolare dal peso serve almeno un ingrediente in grammi."; return; }
+    b.fasi.forEach((f, i) => { if (!i || !(f.sovrapponi_min > 0)) delete f.sovrapponi_min; });
+    if (!(b.resa.pezzi > 0)) b.resa.pezzi = 1;
+    if (!b.resa.peso_pezzo_g && !(b.resa.pezzi_base > 0)) b.resa.pezzi_base = b.resa.pezzi;
+    const nuova = normalizza(b);
+    nuova.aggiornata = Date.now();
+    if (idOrig) {
+      nuova.id = idOrig;
+      personali = personali.map(x => x.id === idOrig ? nuova : x);
+      // le durate personalizzate restano solo per le fasi che esistono ancora
+      const s = leggi(LS_STATO + idOrig, null);
+      if (s) { s.pezzi = 0; s.peso = 0; scrivi(LS_STATO + idOrig, s); }
+    } else {
+      nuova.id = "mia-" + slug(nuova.titolo) + "-" + rnd();
+      personali.push(nuova);
+    }
+    salvaPersonali();
+    toast("Ricetta salvata");
+    location.hash = "#/r/" + encodeURIComponent(nuova.id);
+  };
+
+  disegna();
+}
+
+/* ---------- ricetta ricevuta via link ---------- */
+async function vistaImporta(codice) {
+  barra({ testo: "Ricette", hash: "#/" });
+  let r;
+  try { const j = await decodifica(codice); const err = valida(j); if (err) throw new Error(err); r = normalizza(j); }
+  catch (e) {
+    $("#app").innerHTML = `<h1>Link non valido</h1><p class="desc">Il link è incompleto o danneggiato. Chiedi a chi te l'ha mandato di condividerlo di nuovo.</p>`;
+    return;
+  }
+  $("#titolino").textContent = "Ricetta ricevuta";
+  const s = { pezzi: r.resa.pezzi, peso: r.resa.peso_pezzo_g, varianti: [], durate: {}, ancora: "inizio", orario: locale(new Date()) };
+  const f = fattore(r, s), tot = pianifica(r, s).totale;
+  const resa = `${fmtNum(s.pezzi, 2)} ${s.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale}${s.peso ? ` da ${fmtQta(s.peso)} g` : ""}`;
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const inSafari = ios && !navigator.standalone;
+  $("#app").innerHTML = `
+    <h1>${esc(r.titolo)}</h1>
+    ${r.autore ? `<p class="autore">${esc(r.autore)}</p>` : ""}
+    ${r.descrizione ? `<p class="desc">${esc(r.descrizione)}</p>` : ""}
+    <p class="aiuto">Dosi per ${esc(resa)}. ${r.fasi.length} fasi, durata complessiva ${fmtDurata(tot)}.</p>
+    <table class="ingr"><tbody>${r.ingredienti.map(g => `<tr><td class="n">${esc(g.nome)}</td><td class="q"><span class="val">${fmtQta(g.qta * f)}</span><span class="u">${esc(g.unita)}</span></td></tr>`).join("")}</tbody></table>
+    <div class="azioni"><button class="btn prim" id="aggiungi">Aggiungi al ricettario</button></div>
+    ${inSafari ? `<div class="backup">
+      <p>Hai il Ricettario sulla schermata Home? Questa pagina si è aperta in Safari, che tiene le ricette separate dall'app. Tocca "Copia per l'app", poi apri il Ricettario e tocca "Incolla link".</p>
+      <div class="azioni"><button class="btn" id="copia">Copia per l'app</button></div>
+    </div>` : ""}`;
+  $("#aggiungi").onclick = () => {
+    const n = aggiungiPersonale(r);
+    toast(`Aggiunta: ${n.titolo}`);
+    location.hash = "#/r/" + encodeURIComponent(n.id);
+  };
+  if ($("#copia")) $("#copia").onclick = async () => {
+    try { await navigator.clipboard.writeText(location.href); toast("Link copiato: ora apri il Ricettario"); } catch (e) { prompt("Copia questo link", location.href); }
+  };
+}
+
+/* ---------- navigazione ---------- */
+function instrada() {
+  const h = decodeURIComponent(location.hash.slice(1) || "/");
+  const parti = h.split("/").filter(Boolean);
+  scrollTo(0, 0);
+  const app = $("#app"); app.oninput = app.onchange = app.onclick = null;
+  if (parti[0] === "r" && parti[1]) vistaRicetta(parti[1]);
+  else if (parti[0] === "importa" && parti[1]) vistaImporta(parti[1]);
+  else if (parti[0] === "nuova") vistaEditor("nuova");
+  else if (parti[0] === "modifica" && parti[1]) vistaEditor("modifica", parti[1]);
+  else if (parti[0] === "duplica" && parti[1]) vistaEditor("duplica", parti[1]);
+  else vistaElenco();
+}
+addEventListener("hashchange", instrada);
+
+(async function avvio() {
+  personali = (leggi(LS_PERS, []) || []).filter(r => !valida(r)).map(r => { const n = normalizza(r); n.id = r.id; return n; });
+  predefinite = (await caricaPredefinite()).map(r => { const n = normalizza(r); n._predef = true; return n; });
+  instrada();
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    try { await navigator.serviceWorker.register("sw.js"); } catch (e) {}
+  }
+})();
+</script>
+</body>
+</html>
