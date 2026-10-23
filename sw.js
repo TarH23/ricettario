@@ -1,7 +1,8 @@
 // Cambia il numero di versione quando aggiorni l'app, così il telefono scarica i file nuovi.
-const VERSIONE = "ricettario-v2";
+const VERSIONE = "ricettario-v3";
 const FILE = ["./", "index.html", "manifest.webmanifest", "icona-180.png", "icona-512.png",
-  "ricette/indice.json", "ricette/pane-semplice-fabio.ricetta.json"];
+  "ricette/indice.json", "ricette/pane-semplice-fabio.ricetta.json",
+  "ricette/pane-semi-senza-impasto.ricetta.json"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSIONE).then(c => c.addAll(FILE)).then(() => self.skipWaiting()));
