@@ -137,6 +137,12 @@ h2{font:600 22px/1.2 var(--serif);margin:36px 0 12px}
 .toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 .nascosto{display:none}
+[hidden]{display:none!important}
+.teglia{margin-top:16px}
+.dimensioni{display:flex;align-items:center;gap:8px;margin-top:10px;color:var(--muted)}
+.dimensioni .inp.num{width:80px}
+.spunta{display:flex;align-items:center;gap:10px;font-weight:500}
+.spunta input{width:20px;height:20px;accent-color:var(--olive)}
 .backup{margin-top:20px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 .backup.avviso{border-color:var(--crust)}
 .backup p{margin:0}
@@ -152,7 +158,7 @@ h2{font:600 22px/1.2 var(--serif);margin:36px 0 12px}
 <script>
 "use strict";
 // Copia di sicurezza delle ricette predefinite: usata solo se la cartella ricette/ non si può leggere.
-const FALLBACK = /*FALLBACK*/[{"formato": 1, "id": "pane-semplice-fabio", "titolo": "Pane semplice di Fabio", "autore": "Fabio Franco, La Casa del Lievito", "descrizione": "Lievito madre semisolido al 75%, idratazione 70%. Farina W260–340.", "resa": {"nome": "pane", "nome_plurale": "pani", "pezzi": 2, "peso_pezzo_g": 750, "pesi_suggeriti": [750, 1200]}, "ingredienti": [{"id": "farina", "nome": "Farina W260/340", "qta": 1000, "unita": "g"}, {"id": "lievito", "nome": "Lievito madre semisolido", "qta": 250, "unita": "g"}, {"id": "acqua1", "nome": "Acqua (autolisi)", "qta": 650, "unita": "g"}, {"id": "acqua2", "nome": "Acqua (seconda dose)", "qta": 50, "unita": "g"}, {"id": "sale", "nome": "Sale", "qta": 20, "unita": "g"}, {"id": "olio", "nome": "Olio extravergine", "qta": 40, "unita": "g"}], "varianti": [{"id": "idr80", "nome": "Idratazione 80%", "modifiche": {"acqua2": 150}, "nota": "Solo se la farina lo regge: alveolatura più aperta, ma impasto più difficile da lavorare e maneggiare."}], "fasi": [{"id": "rinfresco", "nome": "Rinfresco del lievito madre", "durata_min": 210, "nota": "Lievito più che raddoppiato dal frigo, rinfresco 1:1:0,75. Segna il livello e usalo al raddoppio (3 h – 3 h 30' a 28°; più tempo se fa più fresco). Lievito liquido: rinfresco 1:1:1, pronto tra +50% e il raddoppio. Senza madre: pre-impasto con 200 g di farina, 150 g d'acqua a 25° e 2 g di lievito compresso, pronto tra il doppio e il triplo (3–4 h a 28°)."}, {"id": "autolisi", "nome": "Autolisi", "durata_min": 45, "sovrapponi_min": 45, "nota": "Farina e acqua dell'autolisi, 30–60 minuti. Si avvia mentre il lievito finisce di crescere."}, {"id": "impasto", "nome": "Impasto", "durata_min": 20, "nota": "Aggiungi il lievito e impasta. Formato il glutine: il sale, poi a poco a poco la seconda dose d'acqua, infine l'olio."}, {"id": "lievitazione", "nome": "Lievitazione in massa", "durata_min": 240, "nota": "Contenitore oliato, segna il livello. Quando si è alzato di qualche millimetro, una piega di rinforzo. Fermati a +80% di volume, poco prima del raddoppio. Se il frigo non sta a 4°, fermati a +50–60%."}, {"id": "preforma", "nome": "Divisione e pre-forma", "durata_min": 30, "nota": "Rovescia sul piano, dividi nelle pezzature e dai una pre-forma. Riposo 30 minuti."}, {"id": "formatura", "nome": "Formatura", "durata_min": 10, "nota": "Forma e metti nei cestini con la parte aperta verso l'alto. Subito in frigo, coperto."}, {"id": "frigo", "nome": "Notte in frigo a 4°", "durata_min": 600, "nota": "Il frigo deve stare a 4°, altrimenti il pane rischia di andare fuori lievitazione."}, {"id": "controllo", "nome": "Controllo della lievitazione", "durata_min": 15, "nota": "Deve essere leggermente gonfio ma non troppo cresciuto. Valuta se infornare subito o aspettare che completi la lievitazione: pronto da cuocere è circa il doppio del volume uscito dall'impastatrice."}, {"id": "cottura", "nome": "Cottura", "durata_min": 60, "durata_per_peso": [[750, 60], [1200, 80]], "nota": "Infarina il fondo, rovescia sulla pala, incidi. Forno statico con un po' di vapore all'inizio: 20' a 250°, 20' a 200°, 20' a 160°, sportello socchiuso negli ultimi 10'. Tempi per pezzi da 750 g; da 1200 g circa 80' in tutto."}], "note": "Seguire il volume, non l'orologio: i tempi di lievitazione sono indicativi. 100 g di madre semisolido si possono sostituire con 100 g di madre liquido o solido senza altre modifiche."}]/*FINE*/;
+const FALLBACK = /*FALLBACK*/[{"formato": 1, "id": "pane-semplice-fabio", "titolo": "Pane semplice di Fabio", "autore": "Fabio Franco, La Casa del Lievito", "descrizione": "Lievito madre semisolido al 75%, idratazione 70%. Farina W260–340.", "resa": {"nome": "pane", "nome_plurale": "pani", "pezzi": 2, "peso_pezzo_g": 750, "pesi_suggeriti": [750, 1200]}, "ingredienti": [{"id": "farina", "nome": "Farina W260/340", "qta": 1000, "unita": "g"}, {"id": "lievito", "nome": "Lievito madre semisolido", "qta": 250, "unita": "g"}, {"id": "acqua1", "nome": "Acqua (autolisi)", "qta": 650, "unita": "g"}, {"id": "acqua2", "nome": "Acqua (seconda dose)", "qta": 50, "unita": "g"}, {"id": "sale", "nome": "Sale", "qta": 20, "unita": "g"}, {"id": "olio", "nome": "Olio extravergine", "qta": 40, "unita": "g"}], "varianti": [{"id": "idr80", "nome": "Idratazione 80%", "modifiche": {"acqua2": 150}, "nota": "Solo se la farina lo regge: alveolatura più aperta, ma impasto più difficile da lavorare e maneggiare."}], "fasi": [{"id": "rinfresco", "nome": "Rinfresco del lievito madre", "durata_min": 210, "nota": "Lievito più che raddoppiato dal frigo, rinfresco 1:1:0,75. Segna il livello e usalo al raddoppio (3 h – 3 h 30' a 28°; più tempo se fa più fresco). Lievito liquido: rinfresco 1:1:1, pronto tra +50% e il raddoppio. Senza madre: pre-impasto con 200 g di farina, 150 g d'acqua a 25° e 2 g di lievito compresso, pronto tra il doppio e il triplo (3–4 h a 28°)."}, {"id": "autolisi", "nome": "Autolisi", "durata_min": 45, "sovrapponi_min": 45, "nota": "Farina e acqua dell'autolisi, 30–60 minuti. Si avvia mentre il lievito finisce di crescere."}, {"id": "impasto", "nome": "Impasto", "durata_min": 20, "nota": "Aggiungi il lievito e impasta. Formato il glutine: il sale, poi a poco a poco la seconda dose d'acqua, infine l'olio."}, {"id": "lievitazione", "nome": "Lievitazione in massa", "durata_min": 240, "nota": "Contenitore oliato, segna il livello. Quando si è alzato di qualche millimetro, una piega di rinforzo. Fermati a +80% di volume, poco prima del raddoppio. Se il frigo non sta a 4°, fermati a +50–60%."}, {"id": "preforma", "nome": "Divisione e pre-forma", "durata_min": 30, "nota": "Rovescia sul piano, dividi nelle pezzature e dai una pre-forma. Riposo 30 minuti."}, {"id": "formatura", "nome": "Formatura", "durata_min": 10, "nota": "Forma e metti nei cestini con la parte aperta verso l'alto. Subito in frigo, coperto."}, {"id": "frigo", "nome": "Notte in frigo a 4°", "durata_min": 600, "nota": "Il frigo deve stare a 4°, altrimenti il pane rischia di andare fuori lievitazione."}, {"id": "controllo", "nome": "Controllo della lievitazione", "durata_min": 15, "nota": "Deve essere leggermente gonfio ma non troppo cresciuto. Valuta se infornare subito o aspettare che completi la lievitazione: pronto da cuocere è circa il doppio del volume uscito dall'impastatrice."}, {"id": "cottura", "nome": "Cottura", "durata_min": 60, "durata_per_peso": [[750, 60], [1200, 80]], "nota": "Infarina il fondo, rovescia sulla pala, incidi. Forno statico con un po' di vapore all'inizio: 20' a 250°, 20' a 200°, 20' a 160°, sportello socchiuso negli ultimi 10'. Tempi per pezzi da 750 g; da 1200 g circa 80' in tutto."}], "note": "Seguire il volume, non l'orologio: i tempi di lievitazione sono indicativi. 100 g di madre semisolido si possono sostituire con 100 g di madre liquido o solido senza altre modifiche."}, {"formato": 1, "id": "pane-semi-senza-impasto", "titolo": "Pane con semi senza impasto", "autore": "Fabio Franco, La Casa del Lievito", "descrizione": "Niente impastatrice: solo pieghe in ciotola. Lievito madre semisolido al 75%, idratazione 75%, farina W340 e integrale, semi di lino e girasole.", "resa": {"nome": "pane", "nome_plurale": "pani", "pezzi": 1, "peso_pezzo_g": 1200, "pesi_suggeriti": [750, 1200]}, "ingredienti": [{"id": "farina", "nome": "Farina W340", "qta": 750, "unita": "g"}, {"id": "integrale", "nome": "Farina integrale", "qta": 250, "unita": "g"}, {"id": "lievito", "nome": "Lievito madre semisolido", "qta": 250, "unita": "g"}, {"id": "acqua", "nome": "Acqua", "qta": 750, "unita": "g"}, {"id": "sale", "nome": "Sale", "qta": 25, "unita": "g"}, {"id": "semi", "nome": "Semi di lino e girasole", "qta": 100, "unita": "g"}, {"id": "acquasemi", "nome": "Acqua per i semi", "qta": 100, "unita": "g"}], "varianti": [{"id": "idr80", "nome": "Idratazione 80%", "modifiche": {"acqua": 800}, "nota": "Solo con farine forti e assorbenti: l'impasto diventa più morbido e più difficile da maneggiare."}], "fasi": [{"id": "rinfresco", "nome": "Rinfresco del lievito madre", "durata_min": 210, "nota": "Lievito più che raddoppiato dal frigo, rinfresco 1:1:0,75. Segna il livello e usalo al raddoppio (3 h – 3 h 30' a 28°). Lievito liquido: rinfresco 1:1:1, pronto tra +50% e il raddoppio. Senza madre: prefermento con 200 g di farina, 150 g d'acqua a 25° e 2 g di lievito compresso, pronto tra il doppio e il triplo (3–4 h a 28°); ne serve la stessa quantità."}, {"id": "semi", "nome": "Tostatura dei semi", "durata_min": 20, "sovrapponi_min": 150, "nota": "Padellino antiaderente con coperchio, fiamma bassa, mescola spesso. Quando scoppiettano spegni, versa l'acqua per i semi, copri e lascia raffreddare del tutto: vanno usati freddi. Meglio 70% lino e 30% girasole. Si possono preparare anche la sera prima e tenere in frigo."}, {"id": "miscelazione", "nome": "Miscelazione e riposo", "durata_min": 30, "nota": "Sciogli il lievito con una frusta in poca acqua, poi aggiungi il resto a poco a poco. Unisci farine, sale e semi e mescola con una spatola solo finché non resta farina asciutta: non serve impastare. Copri e lascia riposare 30 minuti."}, {"id": "pieghe1", "nome": "Prima serie di pieghe", "durata_min": 30, "nota": "Mani bagnate: solleva i bordi e ripiegali verso il centro lungo tutta la circonferenza. Capovolgi con la chiusura sotto, copri e lascia riposare."}, {"id": "pieghe2", "nome": "Seconda serie di pieghe", "durata_min": 30, "nota": "Come la prima, poi copri."}, {"id": "pieghe3", "nome": "Terza serie di pieghe", "durata_min": 30, "nota": "Come la prima, poi copri."}, {"id": "pieghe4", "nome": "Quarta serie di pieghe", "durata_min": 10, "nota": "Prova del velo: allargando un pezzetto con le mani bagnate deve diventare sottile e quasi trasparente senza rompersi. Trasferisci in un contenitore graduato ben oliato e segna il livello."}, {"id": "massa", "nome": "Lievitazione in massa", "durata_min": 140, "nota": "Al primo aumento di volume leggero ma ben visibile, estrai l'impasto, fai una piega di rinforzo e rimettilo nel contenitore. Prosegui fino a +60% rispetto al livello segnato. Con alcune farine conviene fermarsi prima."}, {"id": "preforma", "nome": "Preforma", "durata_min": 30, "nota": "Rovescia sul piano, dividi se serve e fai la preforma. Copri e lascia riposare 30 minuti."}, {"id": "formatura", "nome": "Formatura", "durata_min": 10, "nota": "Piano con pochissima semola, parte di sotto verso l'alto. Allarga a quadrato senza schiacciare, ripiega i due angoli superiori e porta giù la punta (per un filone più corto ripiega anche i lati). Arrotola verso il basso con buona tensione, salda la chiusura, rotola nella semola e metti nel cestino con la chiusura in alto. Coperto, subito in frigo."}, {"id": "frigo", "nome": "Notte in frigo a 4°", "durata_min": 900, "nota": "Il frigo deve stare davvero a 4°. Se non ci riesce: un paio d'ore in frigo, poi 30 minuti in congelatore e cottura in giornata. Oppure lievitazione finale a temperatura ambiente e cottura in giornata, ma il pane sarà più difficile da incidere."}, {"id": "forno", "nome": "Accensione del forno", "durata_min": 45, "sovrapponi_min": 30, "nota": "Forno statico ben preriscaldato a 250°, con la pietra refrattaria (o la pentola in ghisa) e un pentolino metallico vuoto per il vapore."}, {"id": "controllo", "nome": "Controllo della lievitazione", "durata_min": 15, "nota": "Il volume non dovrebbe superare circa il doppio di quello a inizio lievitazione in massa. Se è cresciuto poco, lascialo un po' a temperatura ambiente; se è troppo sviluppato, la prossima volta forma prima del +60%.", "sovrapponi_min": 15}, {"id": "cottura", "nome": "Cottura", "durata_min": 55, "durata_per_peso": [[750, 55], [1200, 75]], "nota": "Infarina il fondo, rovescia sulla pala e incidi con decisione. Al momento di infornare versa 60–80 g d'acqua nel pentolino caldo. 20' a 250°, 20' a 200°, poi 160° fino a fine cottura, con lo sportello socchiuso negli ultimi 10'. Circa 50–60' per 750 g, 70–80' per 1200 g. In pentola: i primi 20' con il coperchio. È cotto se il fondo suona vuoto; perde il 15–20% del peso."}], "note": "Gli orari sono indicativi e pensati per un ambiente a circa 28°: conta il volume dell'impasto, non l'orologio. Dopo la cottura lascia raffreddare su una griglia, scoperto, da mattina a sera; per tagliarlo caldo usa un coltello dentato con la lama bagnata. 100 g di madre semisolido si possono sostituire con 100 g di madre liquido o solido."}, {"formato": 1, "id": "focaccia-in-teglia", "titolo": "Focaccia in teglia", "autore": "", "descrizione": "Con lievito di birra, farina 0 W270. L'impasto si calcola dalla teglia: lato × lato : 2 = grammi di pasta.", "resa": {"nome": "teglia", "nome_plurale": "teglie", "pezzi": 1, "teglia": {"g_per_cm2": 0.5, "forma": "rettangolare", "lati_cm": [30, 40], "diametro_cm": 28, "suggerite": [{"nome": "30×40", "forma": "rettangolare", "lati_cm": [30, 40]}, {"nome": "25×35", "forma": "rettangolare", "lati_cm": [25, 35]}, {"nome": "Tonda Ø 28", "forma": "tonda", "diametro_cm": 28}, {"nome": "Tonda Ø 32", "forma": "tonda", "diametro_cm": 32}]}}, "ingredienti": [{"id": "farina", "nome": "Farina 0 (W270, P/L 0,5, 13% proteine)", "qta": 500, "unita": "g"}, {"id": "lievito", "nome": "Lievito di birra fresco", "qta": 5, "unita": "g"}, {"id": "acqua", "nome": "Acqua fredda", "qta": 280, "unita": "g"}, {"id": "olio", "nome": "Olio extravergine di oliva", "qta": 50, "unita": "g"}, {"id": "sale", "nome": "Sale", "qta": 11, "unita": "g"}], "fasi": [{"id": "miscelazione", "nome": "Prima miscelazione e riposo", "durata_min": 15, "nota": "Farina in una ciotola, versa l'acqua tenendone da parte circa 20 g (il 7% dell'acqua) e impasta grossolanamente per qualche minuto. Riposo 10 minuti."}, {"id": "lievito", "nome": "Impasto con il lievito", "durata_min": 15, "nota": "Unisci il lievito spezzettato e lavora per circa un quarto d'ora, finché la massa è omogenea."}, {"id": "sale-olio", "nome": "Sale, acqua restante e olio", "durata_min": 15, "nota": "Incorpora il sale e l'acqua tenuta da parte e impasta per 10 minuti. Infine aggiungi l'olio e lavora finché non è assorbito."}, {"id": "lievitazione", "nome": "Lievitazione in ciotola", "durata_min": 120, "nota": "Ciotola leggermente oliata, a 22–24°, per un paio d'ore."}, {"id": "panetti", "nome": "Divisione in panetti", "durata_min": 10, "nota": "Dividi in panetti secondo la teglia (lato × lato : 2 = grammi di pasta) e ripiegali su se stessi fino a palline lisce e setose."}, {"id": "riposo-panetti", "nome": "Riposo dei panetti", "durata_min": 60, "nota": "A temperatura ambiente, circa un'ora."}, {"id": "stesura", "nome": "Stesura in teglia", "durata_min": 15, "nota": "Con le mani unte d'olio stendi fino ai bordi della teglia. Se l'impasto si ritira, fermati 10–15 minuti e poi riprendi."}, {"id": "riposo-teglia", "nome": "Riposo in teglia", "durata_min": 30, "nota": "Circa mezz'ora."}, {"id": "forno", "nome": "Accensione del forno", "durata_min": 30, "sovrapponi_min": 30, "nota": "Forno statico a 240°."}, {"id": "cottura", "nome": "Condimento e cottura", "durata_min": 20, "nota": "Condisci a piacere e cuoci in forno statico a 240°. La ricetta non indica il tempo: questo è solo un punto di partenza, regolalo sulla doratura."}], "note": "L'acqua è al 56% della farina. Per calcolare l'impasto di una teglia: lato × lato (in cm) diviso 2 = grammi di pasta."}]/*FINE*/;
 
 const LS_PERS = "ricettario.personali";
 const LS_STATO = "ricettario.stato.";
@@ -186,8 +192,10 @@ function normalizza(r) {
     pezzi: +re.pezzi > 0 ? +re.pezzi : 1,
     peso_pezzo_g: +re.peso_pezzo_g > 0 ? +re.peso_pezzo_g : 0,
     pezzi_base: +re.pezzi_base > 0 ? +re.pezzi_base : (+re.pezzi > 0 ? +re.pezzi : 1),
-    pesi_suggeriti: Array.isArray(re.pesi_suggeriti) ? re.pesi_suggeriti.filter(x => +x > 0).map(Number) : []
+    pesi_suggeriti: Array.isArray(re.pesi_suggeriti) ? re.pesi_suggeriti.filter(x => +x > 0).map(Number) : [],
+    teglia: normTeglia(re.teglia)
   };
+  if (r.resa.teglia) r.resa.peso_pezzo_g = Math.round(areaTeglia(r.resa.teglia) * r.resa.teglia.g_per_cm2);
   const visti = new Set();
   const unico = (base) => { let id = slug(base) || "x", i = 2; while (visti.has(id)) id = slug(base) + "-" + i++; visti.add(id); return id; };
   r.ingredienti = (r.ingredienti || []).map(g => ({ id: g.id && !visti.has(g.id) ? (visti.add(g.id), g.id) : unico(g.nome), nome: String(g.nome || ""), qta: +g.qta || 0, unita: g.unita || "g" }));
@@ -201,6 +209,21 @@ function normalizza(r) {
   r.varianti = (r.varianti || []).filter(v => v && v.nome).map((v, i) => ({ id: v.id || "v" + i, nome: v.nome, nota: v.nota || "", modifiche: v.modifiche || {} }));
   return r;
 }
+function normTeglia(t) {
+  if (!t || !(+t.g_per_cm2 > 0)) return null;
+  const lati = v => Array.isArray(v) && v.length === 2 && v.every(x => +x > 0) ? v.map(Number) : null;
+  return {
+    g_per_cm2: +t.g_per_cm2,
+    forma: t.forma === "tonda" ? "tonda" : "rettangolare",
+    lati_cm: lati(t.lati_cm) || [30, 40],
+    diametro_cm: +t.diametro_cm > 0 ? +t.diametro_cm : 28,
+    suggerite: (Array.isArray(t.suggerite) ? t.suggerite : []).filter(x => x && x.nome).map(x => x.forma === "tonda"
+      ? { nome: String(x.nome), forma: "tonda", diametro_cm: +x.diametro_cm || 28 }
+      : { nome: String(x.nome), forma: "rettangolare", lati_cm: lati(x.lati_cm) || [30, 40] })
+  };
+}
+function areaTeglia(t) { return t.forma === "tonda" ? Math.PI * (t.diametro_cm / 2) ** 2 : t.lati_cm[0] * t.lati_cm[1]; }
+function nomeTeglia(t) { return t.forma === "tonda" ? `tonda Ø ${fmtNum(t.diametro_cm)} cm` : `${fmtNum(t.lati_cm[0])}×${fmtNum(t.lati_cm[1])} cm`; }
 function valida(r) {
   if (!r || typeof r !== "object") return "Il file non contiene una ricetta.";
   if (!String(r.titolo || "").trim()) return "Manca il titolo della ricetta.";
@@ -214,6 +237,7 @@ function valida(r) {
 function perEsportare(r) {
   const o = JSON.parse(JSON.stringify(r)); delete o._predef;
   if (!o.varianti.length) delete o.varianti;
+  if (!o.resa.teglia) delete o.resa.teglia; else if (!o.resa.teglia.suggerite.length) delete o.resa.teglia.suggerite;
   return o;
 }
 
@@ -242,6 +266,15 @@ function statoDi(r) {
   if (!(s.peso > 0)) s.peso = r.resa.peso_pezzo_g;
   s.varianti = Array.isArray(s.varianti) ? s.varianti.filter(id => r.varianti.some(v => v.id === id)) : [];
   s.durate = s.durate || {};
+  if (r.resa.teglia) {
+    const t = r.resa.teglia, st = s.teglia || {};
+    s.teglia = {
+      forma: st.forma === "tonda" || st.forma === "rettangolare" ? st.forma : t.forma,
+      lati_cm: Array.isArray(st.lati_cm) && st.lati_cm.length === 2 && st.lati_cm.every(x => x > 0) ? st.lati_cm : [...t.lati_cm],
+      diametro_cm: st.diametro_cm > 0 ? st.diametro_cm : t.diametro_cm
+    };
+    s.peso = areaTeglia(s.teglia) * t.g_per_cm2;
+  }
   s.ancora = s.ancora === "fine" ? "fine" : "inizio";
   if (!s.orario) s.orario = orarioPredefinito();
   return s;
@@ -416,7 +449,7 @@ function vistaElenco() {
   const ultimo = leggi(LS_BACKUP, 0), mod = leggi(LS_MOD, 0);
   const daFare = personali.length > 0 && (!ultimo || mod > ultimo);
   const voce = r => {
-    const s = r.resa.peso_pezzo_g ? `${r.resa.pezzi} ${r.resa.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale} da ${r.resa.peso_pezzo_g} g` : `${r.resa.pezzi} ${r.resa.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale}`;
+    const s = r.resa.teglia ? `${r.resa.pezzi} ${r.resa.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale} ${nomeTeglia(r.resa.teglia)}` : r.resa.peso_pezzo_g ? `${r.resa.pezzi} ${r.resa.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale} da ${r.resa.peso_pezzo_g} g` : `${r.resa.pezzi} ${r.resa.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale}`;
     return `<li><a href="#/r/${encodeURIComponent(r.id)}"><div class="t">${esc(r.titolo)}</div><div class="s">${esc(r.autore ? r.autore : s)}</div></a></li>`;
   };
   $("#app").innerHTML = `
@@ -475,14 +508,29 @@ function vistaRicetta(id) {
         <label for="pezzi" id="lblpezzi">Numero di ${esc(r.resa.nome_plurale)}</label>
         <div class="passo"><button aria-label="Meno" data-passo="-1">−</button><input id="pezzi" inputmode="decimal" autocomplete="off"><button aria-label="Più" data-passo="1">+</button></div>
       </div>
-      ${r.resa.peso_pezzo_g ? `
+      ${r.resa.peso_pezzo_g && !r.resa.teglia ? `
       <div class="campo">
         <label for="peso">Peso di ogni ${esc(r.resa.nome)} (g)</label>
         <input id="peso" class="inp num" inputmode="decimal" autocomplete="off" value="${esc(fmtQta(s.peso))}">
       </div>` : ""}
     </div>
-    ${((r.resa.peso_pezzo_g && r.resa.pesi_suggeriti.length) || r.varianti.length) ? `<div class="pillole">
-      ${(r.resa.peso_pezzo_g ? r.resa.pesi_suggeriti : []).map(p => `<button class="pillola" data-peso="${p}" aria-pressed="${s.peso === p}">${p} g</button>`).join("")}
+    ${r.resa.teglia ? `<div class="teglia">
+      <div class="ancora" role="group" aria-label="Forma della teglia">
+        <button data-forma="rettangolare" aria-pressed="${s.teglia.forma === "rettangolare"}">Rettangolare</button>
+        <button data-forma="tonda" aria-pressed="${s.teglia.forma === "tonda"}">Tonda</button>
+      </div>
+      <div class="dimensioni" id="dimrett" ${s.teglia.forma === "tonda" ? "hidden" : ""}>
+        <input id="latoA" class="inp num" inputmode="decimal" autocomplete="off" aria-label="Primo lato in centimetri" value="${esc(fmtNum(s.teglia.lati_cm[0]))}">×
+        <input id="latoB" class="inp num" inputmode="decimal" autocomplete="off" aria-label="Secondo lato in centimetri" value="${esc(fmtNum(s.teglia.lati_cm[1]))}">cm
+      </div>
+      <div class="dimensioni" id="dimtonda" ${s.teglia.forma === "tonda" ? "" : "hidden"}>
+        Ø <input id="diam" class="inp num" inputmode="decimal" autocomplete="off" aria-label="Diametro in centimetri" value="${esc(fmtNum(s.teglia.diametro_cm))}">cm
+      </div>
+      <p class="aiuto" id="pesoteglia"></p>
+    </div>` : ""}
+    ${((r.resa.peso_pezzo_g && !r.resa.teglia && r.resa.pesi_suggeriti.length) || (r.resa.teglia && r.resa.teglia.suggerite.length) || r.varianti.length) ? `<div class="pillole">
+      ${(r.resa.teglia ? r.resa.teglia.suggerite : []).map((t, i) => `<button class="pillola" data-tsug="${i}">${esc(t.nome)}</button>`).join("")}
+      ${(r.resa.peso_pezzo_g && !r.resa.teglia ? r.resa.pesi_suggeriti : []).map(p => `<button class="pillola" data-peso="${p}" aria-pressed="${s.peso === p}">${p} g</button>`).join("")}
       ${r.varianti.map(v => `<button class="pillola" data-var="${esc(v.id)}" aria-pressed="${s.varianti.includes(v.id)}">${esc(v.nome)}</button>`).join("")}
     </div>` : ""}
     <div id="notevar"></div>
@@ -573,6 +621,31 @@ function vistaRicetta(id) {
   }
   const aggiornaPillole = () => document.querySelectorAll("[data-peso]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.peso === s.peso)));
   document.querySelectorAll("[data-peso]").forEach(b => b.onclick = () => { s.peso = +b.dataset.peso; salva(); peso.value = fmtQta(s.peso); aggiornaPillole(); aggiornaDosi(null); aggiornaTempi(); });
+  if (r.resa.teglia) {
+    const g = r.resa.teglia.g_per_cm2;
+    const uguale = (a, b) => a.forma === b.forma && (a.forma === "tonda" ? Math.abs(a.diametro_cm - b.diametro_cm) < 1e-9 : a.lati_cm[0] === b.lati_cm[0] && a.lati_cm[1] === b.lati_cm[1]);
+    const aggiornaTeglia = (campi) => {
+      s.peso = areaTeglia(s.teglia) * g; salva();
+      $("#dimrett").hidden = s.teglia.forma === "tonda"; $("#dimtonda").hidden = s.teglia.forma !== "tonda";
+      document.querySelectorAll("[data-forma]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.forma === s.teglia.forma)));
+      if (campi) { $("#latoA").value = fmtNum(s.teglia.lati_cm[0]); $("#latoB").value = fmtNum(s.teglia.lati_cm[1]); $("#diam").value = fmtNum(s.teglia.diametro_cm); }
+      $("#pesoteglia").textContent = `${fmtQta(s.peso)} g di impasto per ${r.resa.nome} (${fmtNum(g, 2)} g per cm²).`;
+      document.querySelectorAll("[data-tsug]").forEach(x => x.setAttribute("aria-pressed", String(uguale(r.resa.teglia.suggerite[+x.dataset.tsug], s.teglia))));
+      aggiornaDosi(null); aggiornaTempi();
+    };
+    document.querySelectorAll("[data-forma]").forEach(x => x.onclick = () => { s.teglia.forma = x.dataset.forma; aggiornaTeglia(false); });
+    const misura = (id, set) => $(id).addEventListener("input", e => { const n = numero(e.target.value); if (n > 0) { set(n); aggiornaTeglia(false); } });
+    misura("#latoA", n => s.teglia.lati_cm = [n, s.teglia.lati_cm[1]]);
+    misura("#latoB", n => s.teglia.lati_cm = [s.teglia.lati_cm[0], n]);
+    misura("#diam", n => s.teglia.diametro_cm = n);
+    document.querySelectorAll("[data-tsug]").forEach(x => x.onclick = () => {
+      const t = r.resa.teglia.suggerite[+x.dataset.tsug];
+      s.teglia.forma = t.forma;
+      if (t.forma === "tonda") s.teglia.diametro_cm = t.diametro_cm; else s.teglia.lati_cm = [...t.lati_cm];
+      aggiornaTeglia(true);
+    });
+    setTimeout(() => aggiornaTeglia(false));
+  }
   document.querySelectorAll("[data-var]").forEach(b => b.onclick = () => {
     const id = b.dataset.var;
     s.varianti = s.varianti.includes(id) ? s.varianti.filter(x => x !== id) : [...s.varianti, id];
@@ -664,12 +737,22 @@ function vistaEditor(modo, id) {
           <div class="campo"><label for="e-n1">Nome al singolare</label><input id="e-n1" class="inp" data-r="nome" value="${esc(R.nome)}"></div>
           <div class="campo"><label for="e-n2">Al plurale</label><input id="e-n2" class="inp" data-r="nome_plurale" value="${esc(R.nome_plurale)}"></div>
         </div>
+        <label class="spunta"><input type="checkbox" id="e-teglia" ${R.teglia ? "checked" : ""}> Si stende in teglia</label>
+        ${R.teglia ? `
+        <div class="due">
+          <div class="campo"><label for="e-pz">Teglie proposte</label><input id="e-pz" class="inp" inputmode="decimal" data-rn="pezzi" value="${esc(fmtNum(R.pezzi, 2))}"></div>
+          <div class="campo"><label for="e-gcm">Grammi di impasto per cm²</label><input id="e-gcm" class="inp" inputmode="decimal" data-tg="g_per_cm2" value="${esc(fmtNum(R.teglia.g_per_cm2, 2))}"></div>
+        </div>
+        <div class="campo"><label>Teglia proposta (cm)</label>
+          <div class="dimensioni" style="margin-top:0"><input class="inp num" inputmode="decimal" data-tg="a" value="${esc(fmtNum(R.teglia.lati_cm[0]))}" aria-label="Primo lato">×<input class="inp num" inputmode="decimal" data-tg="b" value="${esc(fmtNum(R.teglia.lati_cm[1]))}" aria-label="Secondo lato"></div>
+        </div>
+        <p class="aiuto">"Lato × lato : 2" corrisponde a 0,5 g per cm². Nella ricetta si potrà scegliere anche una teglia tonda o di altre misure.</p>` : `
         <div class="due">
           <div class="campo"><label for="e-pz">Quantità proposta</label><input id="e-pz" class="inp" inputmode="decimal" data-rn="pezzi" value="${esc(fmtNum(R.pezzi, 2))}"></div>
           <div class="campo"><label for="e-peso">Peso di ognuno (g)</label><input id="e-peso" class="inp" inputmode="decimal" data-rn="peso_pezzo_g" value="${R.peso_pezzo_g ? esc(fmtQta(R.peso_pezzo_g)) : ""}" placeholder="facoltativo"></div>
         </div>
         <div class="campo" id="e-basewrap" ${R.peso_pezzo_g ? 'hidden' : ''}><label for="e-base">Le quantità qui sotto bastano per</label><input id="e-base" class="inp" inputmode="decimal" data-rn="pezzi_base" value="${esc(fmtNum(R.pezzi_base, 2))}" style="max-width:120px"></div>
-        <p class="aiuto">Con il peso, le dosi si calcolano dal peso totale in grammi degli ingredienti. Senza peso, si proporzionano al numero.</p>
+        <p class="aiuto">Con il peso, le dosi si calcolano dal peso totale in grammi degli ingredienti. Senza peso, si proporzionano al numero.</p>`}
       </div>
 
       <h2>Ingredienti</h2>
@@ -719,6 +802,12 @@ function vistaEditor(modo, id) {
     if (d.k) b[d.k] = t.value;
     else if (d.r) b.resa[d.r] = t.value;
     else if (d.rn) { const n = numero(t.value); b.resa[d.rn] = n > 0 ? n : 0; if (d.rn === "peso_pezzo_g") $("#e-basewrap").hidden = n > 0; }
+    else if (d.tg && b.resa.teglia) { const n = numero(t.value); if (n > 0) { if (d.tg === "a") b.resa.teglia.lati_cm[0] = n; else if (d.tg === "b") b.resa.teglia.lati_cm[1] = n; else b.resa.teglia.g_per_cm2 = n; } }
+    else if (t.id === "e-teglia" && e.type === "change") {
+      if (t.checked) { b.resa.teglia = normTeglia({ g_per_cm2: 0.5 }); if (b.resa.nome === "porzione") { b.resa.nome = "teglia"; b.resa.nome_plurale = "teglie"; } }
+      else { b.resa.teglia = null; b.resa.peso_pezzo_g = 0; }
+      disegna();
+    }
     else if (d.gi != null) { const g = b.ingredienti[+d.gi]; g[d.gk] = d.gk === "qta" ? (numero(t.value) || 0) : t.value; }
     else if (d.fi != null) { const f = b.fasi[+d.fi]; if (d.fk === "durata_min" || d.fk === "sovrapponi_min") f[d.fk] = Math.max(0, numero(t.value) || 0); else f[d.fk] = t.value; }
   };
@@ -742,7 +831,7 @@ function vistaEditor(modo, id) {
     if (!String(b.titolo).trim()) { err.textContent = "Scrivi un titolo."; return; }
     if (!b.ingredienti.length) { err.textContent = "Aggiungi almeno un ingrediente."; disegna(); return; }
     if (!b.fasi.length) { err.textContent = "Aggiungi almeno una fase."; disegna(); return; }
-    if (b.resa.peso_pezzo_g && !b.ingredienti.some(g => g.unita === "g" && g.qta > 0)) { err.textContent = "Per calcolare dal peso serve almeno un ingrediente in grammi."; return; }
+    if ((b.resa.peso_pezzo_g || b.resa.teglia) && !b.ingredienti.some(g => g.unita === "g" && g.qta > 0)) { err.textContent = "Per calcolare dal peso serve almeno un ingrediente in grammi."; return; }
     b.fasi.forEach((f, i) => { if (!i || !(f.sovrapponi_min > 0)) delete f.sovrapponi_min; });
     if (!(b.resa.pezzi > 0)) b.resa.pezzi = 1;
     if (!b.resa.peso_pezzo_g && !(b.resa.pezzi_base > 0)) b.resa.pezzi_base = b.resa.pezzi;
@@ -778,7 +867,7 @@ async function vistaImporta(codice) {
   $("#titolino").textContent = "Ricetta ricevuta";
   const s = { pezzi: r.resa.pezzi, peso: r.resa.peso_pezzo_g, varianti: [], durate: {}, ancora: "inizio", orario: locale(new Date()) };
   const f = fattore(r, s), tot = pianifica(r, s).totale;
-  const resa = `${fmtNum(s.pezzi, 2)} ${s.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale}${s.peso ? ` da ${fmtQta(s.peso)} g` : ""}`;
+  const resa = `${fmtNum(s.pezzi, 2)} ${s.pezzi === 1 ? r.resa.nome : r.resa.nome_plurale}${r.resa.teglia ? " " + nomeTeglia(r.resa.teglia) : s.peso ? ` da ${fmtQta(s.peso)} g` : ""}`;
   const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const inSafari = ios && !navigator.standalone;
   $("#app").innerHTML = `

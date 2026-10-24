@@ -1,0 +1,95 @@
+{
+  "formato": 1,
+  "id": "focaccia-in-teglia",
+  "titolo": "Focaccia in teglia",
+  "autore": "",
+  "descrizione": "Con lievito di birra, farina 0 W270. L'impasto si calcola dalla teglia: lato × lato : 2 = grammi di pasta.",
+  "resa": {
+    "nome": "teglia",
+    "nome_plurale": "teglie",
+    "pezzi": 1,
+    "teglia": {
+      "g_per_cm2": 0.5,
+      "forma": "rettangolare",
+      "lati_cm": [30, 40],
+      "diametro_cm": 28,
+      "suggerite": [
+        { "nome": "30×40", "forma": "rettangolare", "lati_cm": [30, 40] },
+        { "nome": "25×35", "forma": "rettangolare", "lati_cm": [25, 35] },
+        { "nome": "Tonda Ø 28", "forma": "tonda", "diametro_cm": 28 },
+        { "nome": "Tonda Ø 32", "forma": "tonda", "diametro_cm": 32 }
+      ]
+    }
+  },
+  "ingredienti": [
+    { "id": "farina", "nome": "Farina 0 (W270, P/L 0,5, 13% proteine)", "qta": 500, "unita": "g" },
+    { "id": "lievito", "nome": "Lievito di birra fresco", "qta": 5, "unita": "g" },
+    { "id": "acqua", "nome": "Acqua fredda", "qta": 280, "unita": "g" },
+    { "id": "olio", "nome": "Olio extravergine di oliva", "qta": 50, "unita": "g" },
+    { "id": "sale", "nome": "Sale", "qta": 11, "unita": "g" }
+  ],
+  "fasi": [
+    {
+      "id": "miscelazione",
+      "nome": "Prima miscelazione e riposo",
+      "durata_min": 15,
+      "nota": "Farina in una ciotola, versa l'acqua tenendone da parte circa 20 g (il 7% dell'acqua) e impasta grossolanamente per qualche minuto. Riposo 10 minuti."
+    },
+    {
+      "id": "lievito",
+      "nome": "Impasto con il lievito",
+      "durata_min": 15,
+      "nota": "Unisci il lievito spezzettato e lavora per circa un quarto d'ora, finché la massa è omogenea."
+    },
+    {
+      "id": "sale-olio",
+      "nome": "Sale, acqua restante e olio",
+      "durata_min": 15,
+      "nota": "Incorpora il sale e l'acqua tenuta da parte e impasta per 10 minuti. Infine aggiungi l'olio e lavora finché non è assorbito."
+    },
+    {
+      "id": "lievitazione",
+      "nome": "Lievitazione in ciotola",
+      "durata_min": 120,
+      "nota": "Ciotola leggermente oliata, a 22–24°, per un paio d'ore."
+    },
+    {
+      "id": "panetti",
+      "nome": "Divisione in panetti",
+      "durata_min": 10,
+      "nota": "Dividi in panetti secondo la teglia (lato × lato : 2 = grammi di pasta) e ripiegali su se stessi fino a palline lisce e setose."
+    },
+    {
+      "id": "riposo-panetti",
+      "nome": "Riposo dei panetti",
+      "durata_min": 60,
+      "nota": "A temperatura ambiente, circa un'ora."
+    },
+    {
+      "id": "stesura",
+      "nome": "Stesura in teglia",
+      "durata_min": 15,
+      "nota": "Con le mani unte d'olio stendi fino ai bordi della teglia. Se l'impasto si ritira, fermati 10–15 minuti e poi riprendi."
+    },
+    {
+      "id": "riposo-teglia",
+      "nome": "Riposo in teglia",
+      "durata_min": 30,
+      "nota": "Circa mezz'ora."
+    },
+    {
+      "id": "forno",
+      "nome": "Accensione del forno",
+      "durata_min": 30,
+      "sovrapponi_min": 30,
+      "nota": "Forno statico a 240°."
+    },
+    {
+      "id": "cottura",
+      "nome": "Condimento e cottura",
+      "durata_min": 20,
+      "nota": "Condisci a piacere e cuoci in forno statico a 240°. La ricetta non indica il tempo: questo è solo un punto di partenza, regolalo sulla doratura."
+    }
+  ],
+  "note": "L'acqua è al 56% della farina. Per calcolare l'impasto di una teglia: lato × lato (in cm) diviso 2 = grammi di pasta."
+}
